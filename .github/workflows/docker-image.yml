@@ -28,6 +28,6 @@ jobs:
     - name : tag and push docker image
       run : |
        docker build . --file Dockerfile --tag mrmayanger/python_pp2:v1.${{github.run_number}}.${GIYHUB_REF##*/}       
-       docker push mrmayanger/Python-App2--v1.{{$Github.run_number}}.${GIYHUB_REF##*/}
+       docker push mrmayanger/Python-App2--v1.${{github.run_number}}.${GIYHUB_REF##*/}
 
     
