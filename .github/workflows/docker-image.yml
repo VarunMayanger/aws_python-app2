@@ -17,7 +17,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build the Docker image
       run:  |
-       docker build . --file Dockerfile --tag python_pp2:v1:${{github.run_number}}
+       docker build . --file Dockerfile --tag python_pp2:v1.${{github.run_number}}.${GIYHUB_REF##*/}
        echo {$GITHUB_REF##*/}
 
     - name: Login to Docker hub
@@ -31,4 +31,3 @@ jobs:
        docker push mrmayanger/python-pp2:v1.${{github.run_number}}.${GIYHUB_REF##*/}
 
     
-
