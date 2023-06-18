@@ -27,7 +27,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name : tag and push docker image
       run : |
-       docker build . -- file Dockerfile tag mrmayanger/mrmayanger/python_pp2--v1.{{$Github_runnumber}}.${GIYHUB_REF##*/}
+       docker build . -- file Dockerfile tag mrmayanger/mrmayanger/python_pp2:v1.{{$Github_runnumber}}.${GIYHUB_REF##*/}
        docker push mrmayanger/Python-App2--v1.{{$Github_runnumber}}.${GIYHUB_REF##*/}
 
     
