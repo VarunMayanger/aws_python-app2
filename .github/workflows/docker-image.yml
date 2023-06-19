@@ -16,9 +16,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run:  |
-       docker build . --file Dockerfile --tag python_app2.${{github.run_number}}
-       echo {$GITHUB_REF##*/}
+      run:  echo ${GIYHUB_REF##*/}
+       
 
     - name: Login to Docker hub
       uses: docker/login-action@v2
