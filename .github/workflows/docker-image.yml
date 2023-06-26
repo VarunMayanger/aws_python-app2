@@ -36,7 +36,7 @@ jobs:
       - name: print the branch name
         shell : bash
         run: |
-         echo "$GITHUB_BRANCH"
+         echo $BRANCH_NAME
       - name : login to AWS
         uses: aws-actions/configure-aws-credentials@v1
         with :
