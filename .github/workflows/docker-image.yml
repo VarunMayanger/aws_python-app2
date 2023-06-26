@@ -1,33 +1,62 @@
-name: Docker Image CI
-
+name : building and run Docker image
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+ push:
+  branches : ['main']  
 
+ pull_request:
+  branches :
+    ['main']
+  
 jobs:
-
   build:
-
+    name: build docker image
     runs-on: ubuntu-latest
-    
-
+    outputs:
+      branch : ${{steps.print_branch.outputs.branch}}
+      image :  ${{steps.image_name.outputs.branch}}
+  
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run:  |
-       docker build . --file Dockerfile --tag python_pp2.${{github.run_number}}
-       echo {$GITHUB_REF##*/}
+      - name: starting CI pipeline
+        run: echo"starting CI Pipeline"
+      - name: Extracting branch name from commit
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run : 
+          echo"Branch name is"
+          echo "$BRANCH_NAME = (echo${GITHUB_REF#refs/heads/})"  >>GITHUB_ENV
+      - name: Extracting branch name from PR
+        if: github.event_name == 'pull_request'
+        shell: bash
+        run : 
+          echo"Branch name is"
+          echo "$BRANCH_NAME = (echo${GITHUB_HEAD_REF})"  >>GITHUB_ENV
 
-    - name: Login to Docker hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name : tag and push docker image
-      run : |
-       docker build . --file Dockerfile --tag mrmayanger/python_pp2:v1.${{github.run_number}}.${GIYHUB_REF##*/}       
-       docker push mrmayanger/python_pp2:v1.${{github.run_number}}.${GIYHUB_REF##*/}
+      - name: print the branch name
+        shell : bash
+        run: |
+         echo " $GITHUB_BRANCH"
+      - name : login to AWS
+        uses: aws-actions/configure-aws-credentials@v1
+        with :
+          aws-access-key-id: ${{ secrets.ENV0_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.ENV0_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+              
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Build, tag, and push WEB image to Amazon ECR
+        id: build_web_image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ vars.ECR_WEB_REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
+        shell: bash
+        run : |
+          ls
+          cd client
+          docker build . -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-    
+
+
