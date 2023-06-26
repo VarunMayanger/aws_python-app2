@@ -16,6 +16,7 @@ jobs:
   
     steps:
       - name: starting CI pipeline
+        shell: bash
         run: echo"starting CI Pipeline"
       - name: Extracting branch name from commit
         if: github.event_name != 'pull_request'
@@ -34,7 +35,7 @@ jobs:
       - name: print the branch name
         shell : bash
         run: |
-         echo " $GITHUB_BRANCH"
+         echo "$GITHUB_BRANCH"
       - name : login to AWS
         uses: aws-actions/configure-aws-credentials@v1
         with :
