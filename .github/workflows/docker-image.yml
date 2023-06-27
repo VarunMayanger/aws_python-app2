@@ -63,7 +63,7 @@ jobs:
    needs: build
    if: github.ref  == 'ref.head.dev'
    runs-on: ubuntu-latest
-   environment : DEV
+   
    steps:
     - name : login to AWS
       uses: aws-actions/configure-aws-credentials@v1
