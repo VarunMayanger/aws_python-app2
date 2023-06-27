@@ -60,7 +60,7 @@ jobs:
 
   Deploy:
    name: Deploy Dev
-   if: github.ref  == 'ref.head.prod'
+   if: github.ref  == 'ref.head.dev'
    runs-on: ubuntu-latest
    environment : DEV
    steps:
