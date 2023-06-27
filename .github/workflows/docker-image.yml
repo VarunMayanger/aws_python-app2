@@ -50,16 +50,14 @@ jobs:
       - name: Build, tag, and push WEB image to Amazon ECR
         id: build_web_image
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ vars.ECR_WEB_REPOSITORY }}
-          IMAGE_TAG: ${{ github.sha }}
+          ECR_REGISTRY: ${{steps.login-ecr.outputs.registry}}
+          ECR_REPOSITORY: ${{vars.ECR_WEB_REPOSITORY}}
+          IMAGE_TAG: ${{github.sha}}
         shell: bash
         run : |
           
-          docker build -t python_app .
-          docker tag python_app:latest 629557947395.dkr.ecr.us-west-2.amazonaws.com/python_app:IMAGE_TAG
-
-          docker push 629557947395.dkr.ecr.us-west-2.amazonaws.com/python_app:IMAGE_TAG
+          docker build .--file ./server/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
 
 
