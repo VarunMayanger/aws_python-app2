@@ -58,5 +58,43 @@ jobs:
           docker build . -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
+  Deploy:
+   name: Deploy Dev
+   if: github.ref  == 'ref.head.prod'
+   runs-on: ubuntu-latest
+   environment : DEV
+   steps:
+    - name : login to AWS
+      uses: aws-actions/configure-aws-credentials@v1
+      with :
+        aws-access-key-id: ${{ secrets.ENV0_AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.ENV0_AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ vars.AWS_REGION }}
+    - name: login to ECR
+      id : login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
 
+    - name: Reset WEB Container
+      uses: peterkimzz/aws-ssm-send-command@master
+      id: ssm-web-stop
+      with:
+        aws-region: ${{ vars.AWS_REGION }}
+        aws-access-key-id: ${{ secrets.ENV0_AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.ENV0_AWS_SECRET_ACCESS_KEY }}
+        instance-ids: ${{ vars.ENV0_WEB_INSTANCE_ID }}
+        working-directory: ""
+        command: sudo docker stop $(docker ps -a -q) && sudo docker rm $(docker ps -a -q) && docker rmi -f $(docker images -aq)
+        comment: Remove old WEB_DEV deployment
 
+    - name: Run WEB Application
+      uses: peterkimzz/aws-ssm-send-command@master
+      id: ssm-web
+      with:
+        aws-region: ${{ vars.AWS_REGION }}
+        aws-access-key-id: ${{ secrets.ENV0_AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.ENV0_AWS_SECRET_ACCESS_KEY }}
+        instance-ids: ${{ vars.ENV0_WEB_INSTANCE_ID }}
+        working-directory: ""
+        command: sudo aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}  && docker run -d --log-driver=awslogs --log-opt awslogs-region=eu-central-1 --log-opt awslogs-group=helix-web-dev --name helix-web -p 80:80 ${{ steps.login-ecr.outputs.registry }}/helixinsightswebecr:${{ github.sha }}
+        comment: Deploy WEB_DEV container
+  
