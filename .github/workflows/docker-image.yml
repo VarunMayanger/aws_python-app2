@@ -56,8 +56,10 @@ jobs:
         shell: bash
         run : |
           
-          docker build . -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push 629557947395.dkr.ecr.us-west-2.amazonaws.com/python_app:latest
+          docker build -t python_app .
+          docker tag python_app:latest 629557947395.dkr.ecr.us-west-2.amazonaws.com/python_app:IMAGE_TAG
+
+          docker push 629557947395.dkr.ecr.us-west-2.amazonaws.com/python_app:IMAGE_TAG
 
 
 
