@@ -55,8 +55,6 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         shell: bash
         run : |
-          ls
-          cd client
           docker build -t python_app .
           docker push 629557947395.dkr.ecr.us-west-2.amazonaws.com/python_app:latest
 
