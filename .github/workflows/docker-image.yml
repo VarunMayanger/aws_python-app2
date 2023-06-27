@@ -60,6 +60,7 @@ jobs:
 
   Deploy:
    name: Deploy Dev
+   needs: build
    if: github.ref  == 'ref.head.dev'
    runs-on: ubuntu-latest
    environment : DEV
