@@ -81,7 +81,7 @@ jobs:
         aws-region: ${{ vars.AWS_REGION }}
         aws-access-key-id: ${{ secrets.ENV0_AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.ENV0_AWS_SECRET_ACCESS_KEY }}
-        instance-ids: ${{ vars.ENV0_WEB_INSTANCE_ID }}
+        instance-ids: "i-024261927b2207767"
         working-directory: ""
         command: sudo docker stop $(docker ps -a -q) && sudo docker rm $(docker ps -a -q) && docker rmi -f $(docker images -aq)
         comment: Remove old WEB_DEV deployment
