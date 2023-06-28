@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       branch : ${{steps.print_branch.outputs.branch}}
+
       
   
     steps:
@@ -82,7 +83,7 @@ jobs:
         aws-region: ${{ vars.AWS_REGION }}
         aws-access-key-id: ${{ secrets.ENV0_AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.ENV0_AWS_SECRET_ACCESS_KEY }}
-        instance-ids: "i-030a30b630da9f8c4"
+        instance-ids: "i-0980fcf427df23401"
         working-directory: ""
         command: sudo docker stop $(docker ps -a -q) && sudo docker rm $(docker ps -a -q) && docker rmi -f $(docker images -aq)
         comment: Remove old WEB_DEV deployment
@@ -94,9 +95,9 @@ jobs:
         aws-region: ${{ vars.AWS_REGION }}
         aws-access-key-id: ${{ secrets.ENV0_AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.ENV0_AWS_SECRET_ACCESS_KEY }}
-        instance-ids: "i-030a30b630da9f8c4"
+        instance-ids: "i-0980fcf427df23401"
         working-directory: ""
-        command: sudo aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}  && docker run -d --log-driver=awslogs --log-opt awslogs-region=us-west-2 --log-opt awslogs-group=helix-web-dev --name helix-web -p 80:80 ${{ steps.login-ecr.outputs.registry }}/helixinsightswebecr:${{ github.sha }} && docker run -p 80:5000 ${{steps.login-ecr.outputs.registry}}/${{vars.ECR_WEB_REPOSITORY}}:${{github.sha}}
+        command: sudo docker run -p 80:5000 ${{steps.login-ecr.outputs.registry}}/${{vars.ECR_WEB_REPOSITORY}}:${{github.sha}}
         
         comment: Deploy WEB_DEV container
   
