@@ -98,7 +98,7 @@ jobs:
         aws-secret-access-key: ${{ secrets.ENV0_AWS_SECRET_ACCESS_KEY }}
         instance-ids: ${{ vars.ENV0_WEB_INSTANCE_ID }}
         working-directory: ""
-        command: sudo aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }} && sudo docker run -d -p 5000:80 ${{steps.login-ecr.outputs.registry}}/${{vars.ECR_WEB_REPOSITORY}}:${{github.sha}}
+        command: sudo aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }} && $ sudo yum -y install nginx && sudo docker run -d -p 5000:80 ${{steps.login-ecr.outputs.registry}}/${{vars.ECR_WEB_REPOSITORY}}:${{github.sha}}
         comment: Deploy WEB_DEV container
   
 
