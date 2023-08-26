@@ -2,7 +2,7 @@ name : building and run Docker image
 on:
  push:
   branches : ['master']  
-
+  
  pull_request:
   branches : ['master']
   
